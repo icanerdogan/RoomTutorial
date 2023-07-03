@@ -15,6 +15,6 @@ class SubscriberRepository(
 
     suspend fun deleteSubscriber(subscriber: Subscriber) = dao.deleteSubscriber(subscriber)
 
-    suspend fun clearAllSubscribers(subscriber: Subscriber) = dao.clearAllSubscribers()
+    suspend fun clearAllSubscribers() = dao.clearAllSubscribers()
 
 }
