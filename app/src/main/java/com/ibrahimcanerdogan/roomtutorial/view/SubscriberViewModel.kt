@@ -1,5 +1,6 @@
 package com.ibrahimcanerdogan.roomtutorial.view
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,17 +37,25 @@ class SubscriberViewModel(
     }
 
     fun actionSaveOrUpdate() {
-        if (isUpdateOrDelete) {
-            subscriberToUpdateOrDelete.name = inputName.value!!
-            subscriberToUpdateOrDelete.email = inputEmail.value!!
-
-            updateSubscriber(subscriberToUpdateOrDelete)
+        if (inputName.value == null) {
+            statusMessage.value = Event("Name field cannot be empty!")
+        } else if (inputEmail.value == null) {
+            statusMessage.value = Event("Email field cannot be empty!")
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(inputEmail.value!!).matches()) {
+            statusMessage.value = Event("Email address not correct!")
         } else {
-            val name = inputName.value
-            val email = inputEmail.value
-            addSubscriber(Subscriber(0, name!!, email!!))
-            inputName.value = ""
-            inputEmail.value = ""
+            if (isUpdateOrDelete) {
+                subscriberToUpdateOrDelete.name = inputName.value!!
+                subscriberToUpdateOrDelete.email = inputEmail.value!!
+
+                updateSubscriber(subscriberToUpdateOrDelete)
+            } else {
+                val name = inputName.value
+                val email = inputEmail.value
+                addSubscriber(Subscriber(0, name!!, email!!))
+                inputName.value = ""
+                inputEmail.value = ""
+            }
         }
     }
 
