@@ -56,9 +56,10 @@ class SubscriberViewModel(
 
     private fun addSubscriber(subscriber: Subscriber) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertSubscriber(subscriber)
+            val numInsert = repository.insertSubscriber(subscriber)
             withContext(Dispatchers.Main) {
-                statusMessage.value = Event("Subscriber Inserted Successfully!")
+                if (numInsert > -1) statusMessage.value = Event("Subscriber Inserted Successfully!")
+                else statusMessage.value = Event("Error Occurred!")
             }
         }
     }
