@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var subscriberViewModel: SubscriberViewModel
-
+    private lateinit var adapter : SubscriberAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -43,16 +43,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         binding.recyclerViewSubscriber.layoutManager = LinearLayoutManager(this)
+        adapter = SubscriberAdapter{ selectedSubscriber: Subscriber ->
+            showSubscriberItemInfo(selectedSubscriber)
+        }
+        binding.recyclerViewSubscriber.adapter = adapter
         displaySubscribeList()
     }
 
     private fun displaySubscribeList() {
         subscriberViewModel.subscribers.observe(this) {
             Log.i("TAG", it.toString())
-            binding.recyclerViewSubscriber.adapter =
-                SubscriberAdapter(it) { selectedSubscriber: Subscriber ->
-                    showSubscriberItemInfo(selectedSubscriber)
-                }
+            adapter.setSubscriberList(it)
+            adapter.notifyDataSetChanged()
         }
     }
 

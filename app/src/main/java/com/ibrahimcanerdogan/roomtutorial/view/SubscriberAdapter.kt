@@ -9,9 +9,15 @@ import com.ibrahimcanerdogan.roomtutorial.database.Subscriber
 import com.ibrahimcanerdogan.roomtutorial.databinding.ItemSubscriberBinding
 
 class SubscriberAdapter(
-    private val subscriberList : List<Subscriber>,
     private val clickListener : (Subscriber) -> Unit
 ) : RecyclerView.Adapter<SubscriberViewHolder>() {
+
+    private val subscriberList : ArrayList<Subscriber> = arrayListOf()
+
+    fun setSubscriberList(subscribers : List<Subscriber>) {
+        subscriberList.clear()
+        subscriberList.addAll(subscribers)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriberViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
