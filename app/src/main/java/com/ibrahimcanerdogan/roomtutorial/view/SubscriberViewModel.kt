@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ibrahimcanerdogan.roomtutorial.database.Subscriber
 import com.ibrahimcanerdogan.roomtutorial.repository.SubscriberRepository
+import com.ibrahimcanerdogan.roomtutorial.util.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,6 +25,10 @@ class SubscriberViewModel(
 
     val buttonSaveUpdateText = MutableLiveData<String>()
     val buttonClearAllOrDeleteText = MutableLiveData<String>()
+
+    private val statusMessage = MutableLiveData<Event<String>>()
+    val message : LiveData<Event<String>>
+        get() = statusMessage
 
     init {
         buttonSaveUpdateText.value = "Save"
@@ -49,13 +54,16 @@ class SubscriberViewModel(
         if (isUpdateOrDelete) deleteSubscriber(subscriberToUpdateOrDelete) else clearAllSubscriber()
     }
 
-    fun addSubscriber(subscriber: Subscriber) {
+    private fun addSubscriber(subscriber: Subscriber) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertSubscriber(subscriber)
+            withContext(Dispatchers.Main) {
+                statusMessage.value = Event("Subscriber Inserted Successfully!")
+            }
         }
     }
 
-    fun updateSubscriber(subscriber: Subscriber) = viewModelScope.launch(Dispatchers.IO) {
+    private fun updateSubscriber(subscriber: Subscriber) = viewModelScope.launch(Dispatchers.IO) {
         repository.updateSubscriber(subscriber)
         withContext(Dispatchers.Main) {
             inputName.value = ""
@@ -64,6 +72,7 @@ class SubscriberViewModel(
             // Button Names changed.
             buttonSaveUpdateText.value = "Save"
             buttonClearAllOrDeleteText.value = "Clear All"
+            statusMessage.value = Event("Subscriber Updated Successfully!")
         }
     }
 
@@ -76,11 +85,15 @@ class SubscriberViewModel(
             // Button Names changed.
             buttonSaveUpdateText.value = "Save"
             buttonClearAllOrDeleteText.value = "Clear All"
+            statusMessage.value = Event("Subscriber Deleted Successfully!")
         }
     }
 
     private fun clearAllSubscriber() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearAllSubscribers()
+        withContext(Dispatchers.Main) {
+            statusMessage.value = Event("All Subscribers Cleared Successfully!")
+        }
     }
 
     fun initUpdateAndDelete(subscriber: Subscriber) {

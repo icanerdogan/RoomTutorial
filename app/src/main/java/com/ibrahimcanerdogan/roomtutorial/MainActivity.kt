@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         initRecyclerView()
+
+        // Show alert message
+        subscriberViewModel.message.observe(this) {
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun initRecyclerView() {
@@ -50,13 +57,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSubscriberItemInfo(subscriber: Subscriber) {
-        Toast
+        /*Toast
             .makeText(
                 this,
                 "Selected Subscriber \nName: ${subscriber.name} \nSubscriber Email: ${subscriber.email}",
                 Toast.LENGTH_LONG
             )
-            .show()
+            .show()*/
 
         subscriberViewModel.initUpdateAndDelete(subscriber)
     }
